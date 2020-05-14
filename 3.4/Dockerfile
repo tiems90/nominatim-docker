@@ -14,7 +14,8 @@ RUN apt-get -y update -qq && \
     apache2 php php-pgsql libapache2-mod-php php-pear php-db \
     php-intl git curl sudo \
     python3-pip libboost-python-dev \
-    osmosis && \
+    osmosis \
+    nano vim && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /tmp/* /var/tmp/*
@@ -40,6 +41,15 @@ COPY nominatim.conf /etc/apache2/sites-enabled/000-default.conf
 
 # Load initial data
 RUN curl http://www.nominatim.org/data/country_grid.sql.gz > /app/src/data/country_osm_grid.sql.gz
+
+# wikipedia rankings
+RUN curl https://www.nominatim.org/data/wikipedia_article.sql.bin > /app/src/data/wikipedia_article.sql.bin
+RUN curl https://www.nominatim.org/data/wikipedia_redirect.sql.bin > /app/src/data/wikipedia_redirect.sql.bin
+RUN curl https://www.nominatim.org/data/us_postcode_data.sql.gz > /app/src/data/us_postcode_data.sql.gz
+RUN curl https://www.nominatim.org/data/gb_postcode_data.sql.gz > /app/src/data/gb_postcode_data.sql.gz
+RUN curl https://nominatim.org/data/tiger2019-nominatim-preprocessed.tar.gz > /app/src/data/tiger2019-nominatim-preprocessed.tar.gz
+RUN tar xf /app/src/data/tiger2019-nominatim-preprocessed.tar.gz -C /app/src/data/
+
 RUN chmod o=rwx /app/src/build
 
 EXPOSE 5432
